@@ -15,11 +15,15 @@ public class ArduinoMovement : MonoBehaviour {
 		string streamInput = stream.ReadLine(); // Reads the data from the arduino card
 		string[] gyroPosition = streamInput.Split(','); // Splits the data from the arduino card so that we have values to work with
 
-		// Rotation. Makes the platform moves smoothly towards a target (the value from the arduino card)
-		Quaternion target = Quaternion.Euler(float.Parse(gyroPosition[0]),float.Parse(gyroPosition[1]),float.Parse(gyroPosition[2]));
-		transform.rotation = Quaternion.Slerp(transform.rotation, target, Time.deltaTime * 2.0f);
+        //gyroPosition[0] = pitch
+        //gyroPosition[0] = yaw
+        //gyroPosition[0] = heading
 
-	}
+        // Rotation. Makes the platform moves smoothly towards a target (the value from the arduino card)
+        Quaternion target = Quaternion.Euler(float.Parse(gyroPosition[0]), float.Parse(gyroPosition[2]), float.Parse(gyroPosition[1]));
+        transform.rotation = Quaternion.Slerp(transform.rotation, target, Time.deltaTime * 2.0f);
+
+    }
 
 
 }
