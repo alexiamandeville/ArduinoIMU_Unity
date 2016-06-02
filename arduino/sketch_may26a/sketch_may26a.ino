@@ -40,16 +40,29 @@ void setup()
  
 void loop(){
 
+  //not printing these, the print functions are commented in the corresponding functions
   printGyro();  // Print "G: gx, gy, gz"
-  printAccel(); // Print "A: ax, ay, az"
   printMag();   // Print "M: mx, my, mz"
-  printAttitude(imu.ax, imu.ay, imu.az, -imu.my, -imu.mx, imu.mz);
+
+  //I am actually printing these to use in Unity
+  //printAttitude(imu.ax, imu.ay, imu.az, -imu.my, -imu.mx, imu.mz);
+  printAccel(); // Print "A: ax, ay, az"
+  printComplementary(imu.ax, imu.ay, imu.az, imu.gx, imu.gy, imu.gz);
  
   Serial.flush(); // Empty the memory each time in the loop
   Serial.println();
   delay(PRINT_SPEED);
 }
 
+void printComplementary(float ax, float ay, float az, float gx, float gy, float gz){
+
+  float angleX = 0.98 * (angleX + imu.gx) + (0.02 * imu.ax);
+  float angleY = 0.98 * (angleY + imu.gy) + (0.02 * imu.ay);
+  float angleZ = 0.98 * (angleX + imu.gz) + (0.02 * imu.az);
+  Serial.println(angleX);
+  Serial.println(angleY);
+  Serial.println(angleZ);
+}
 
 void printGyro()
 {
@@ -60,7 +73,7 @@ void printGyro()
   
   // Now we can use the gx, gy, and gz variables as we please.
   // Either print them as raw ADC values, or calculated in DPS.
-  /*Serial.print("G: ");
+  Serial.print("G: ");
 #ifdef PRINT_CALCULATED
   // If you want to print calculated values, you can use the
   // calcGyro helper function to convert a raw ADC value to
@@ -69,15 +82,15 @@ void printGyro()
   Serial.print(", ");
   Serial.print(imu.calcGyro(imu.gy), 2);
   Serial.print(", ");
-  Serial.print(imu.calcGyro(imu.gz), 2);*/
+  Serial.print(imu.calcGyro(imu.gz), 2);
 
-//#elif defined PRINT_RAW
-  /*Serial.print(imu.gx);
+#elif defined PRINT_RAW
+  Serial.print(imu.gx);
   Serial.print(", ");
   Serial.print(imu.gy);
   Serial.print(", ");
   Serial.println(imu.gz);
-#endif*/
+#endif
 }
 
 void printAccel()
@@ -89,17 +102,18 @@ void printAccel()
   
   /*// Now we can use the ax, ay, and az variables as we please.
   // Either print them as raw ADC values, or calculated in g's.
-  Serial.print("A: ");
+  //Serial.print("A: ");
 #ifdef PRINT_CALCULATED
   // If you want to print calculated values, you can use the
   // calcAccel helper function to convert a raw ADC value to
   // g's. Give the function the value that you want to convert.
-  Serial.print(imu.calcAccel(imu.ax), 2);
-  Serial.print(", ");
+  //Serial.print(", ");
+  //Serial.print(imu.calcAccel(imu.ax), 2);
+  //Serial.print(", ");
   Serial.print(imu.calcAccel(imu.ay), 2);
-  Serial.print(", ");
-  Serial.print(imu.calcAccel(imu.az), 2);
-  Serial.println(" g");
+  //Serial.print(", ");
+  //Serial.print(imu.calcAccel(imu.az), 2);
+  //Serial.println(" g");
 #elif defined PRINT_RAW 
   Serial.print(imu.ax);
   Serial.print(", ");
